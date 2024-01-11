@@ -22,7 +22,7 @@ def modeltry(file, network_file, output_file="output_flow_info.xlsx", new_output
     K = [1, 6, 9, 10, 14, 16, 17, 20, 22, 27, 33, 34, 35, 39, 40, 41, 45, 51, 54, 59, 68, 77, 80, 81]  # Specific set of indices
     L = [1, 6, 9, 10, 14, 16, 17, 20, 22, 27, 33, 34, 35, 39, 40, 41, 45, 51, 54, 59, 68, 77, 80, 81]  # Similar set as K
     Q = 10  # Desired number of hubs
-    alpha = 0.610  # A parameter, possibly a cost factor
+    alpha = 0.610 
 
     # Define Routes and DirectAssignment sets for the model
     Routes = [(i, j, k, l) for i in I for j in J for k in K for l in L]  # Possible routes using hubs
