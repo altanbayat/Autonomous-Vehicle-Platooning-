@@ -104,13 +104,41 @@ def modeltry(file, network_file, output_file="output_flow_info.xlsx", new_output
     # Export the DataFrame to an Excel file
     flow_info_df.to_excel(output_file, index=False)
 
-    # Further data manipulation and export to a new Excel file
-    # The following operations create a new DataFrame, apply randomization and conditions, 
-    # and perform additional calculations before exporting the results.
+    # Generate random integers with triangular distribution and fill the 2nd column
+    np.random.seed(42)  # For reproducibility, you can remove this line if not needed
+    new_output_df['2nd_column'] = np.random.triangular(left=240, mode=360, right=600, size=len(new_output_df))
 
-    # [Note: This section involves further data manipulation, including random number generation,
-    # conditional operations, and data aggregation, which are essential for refining the analysis 
-    # and preparing the data for export.]
+    # Update the 2nd column to 0 if the value in the 1st column is 0
+    new_output_df.loc[new_output_df['new_column7'] == 0, '2nd_column'] = 0
 
-    # Call the function with file paths
-    result = modeltry("temporary data (1).xls", "Turkish network (6).xls", output_file="output_flow_info.xlsx", new_output_file="new_output_file.xlsx")
+    # Sum the two columns and add the result to a new column
+    new_output_df['sum_of_columns'] = new_output_df['new_column7'] + new_output_df['2nd_column']
+    
+    # Check and update sum_of_columns values until all values are between 600 and 960  
+    new_output_df.sort_values(by='sum_of_columns', inplace=True)
+
+    # Save the modified DataFrame to the new Excel file
+    new_output_df.to_excel(new_output_file, index=False)
+    grouped_df = new_output_df.groupby(np.arange(len(new_output_df)) // 4)
+
+    # Calculate the differences for each group
+    differences = []
+    for _, group in grouped_df:
+        min_value = group['sum_of_columns'].min()
+        max_value = group['sum_of_columns'].max()
+        difference = max_value - min_value
+        differences.append(difference)
+
+    # Calculate the average, minimum, and maximum differences
+    avg_difference = np.mean(differences)
+    min_difference = min(differences)
+    max_difference = max(differences)
+
+    # Print or display the calculated values
+    print("Average Difference:", avg_difference)
+    print("Minimum Difference:", min_difference)
+    print("Maximum Difference:", max_difference)    
+    return m.objVal
+
+# Call the function with your file path
+result = modeltry("temporary data (1).xls", "Turkish network (6).xls", output_file="output_flow_info.xlsx", new_output_file="new_output_file.xlsx")
